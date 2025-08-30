@@ -29,7 +29,7 @@ const int NUM_GERACOES = 8;
 const int TAM_CROMOSSOMO = 7;
 const double TAXA_MUTACAO = 0.1;
 const double TAXA_CROSSOVER = 0.7;
-const int IDEAL = 16384;
+const int IDEAL = 16384; // o valor ideal que queremos alcançar (128²)
 
 
 int binario_para_int(vector<int> num) {
