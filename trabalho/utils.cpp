@@ -16,7 +16,8 @@ float rand_float_0_1() {
     return (float)rand() / RAND_MAX;
 }
 
-// implementação do DNA ----
+
+// implementação do DNA ------
 DNA::DNA(int tamanho) {
     for (int i = 0; i < tamanho; i++) {
         // vetor aleatório unitário (ou quase)
@@ -53,7 +54,8 @@ void DNA::mutacao(float taxa_variavel) {
     }
 }
 
-// implementação do peixe ----
+
+// implementação do peixe ------
 Peixe::Peixe(float x_ini, float y_ini) : dna(TEMPO_VIDA), x(x_ini), y(y_ini), vel_x(0), vel_y(0), acc_x(0), acc_y(0), bateu(false), chegou(false) {}
 
 Peixe::Peixe(float x_ini, float y_ini, DNA dna_pai) : dna(dna_pai), x(x_ini), y(y_ini), vel_x(0), vel_y(0), acc_x(0), acc_y(0), bateu(false), chegou(false) {}
@@ -107,7 +109,8 @@ void Peixe::calcularFitness(float tx, float ty) {
     if (bateu) fitness /= 20.0f;
 }
 
-// implementação da população ----
+
+// implementação da população ------
 void Populacao::inicializar(int qtd, int largura, int altura) {
     peixes.clear();
     largura_mundo = largura;
@@ -182,7 +185,7 @@ void Populacao::recalcularMapaDistancias() {
             int ny = cy + dy[k];
 
             if (nx >= 0 && nx < cols && ny >= 0 && ny < rows) {
-                if (mapaDistancia[nx][ny] > distAtual + 1) { // Se achou caminho mais curto
+                if (mapaDistancia[nx][ny] > distAtual + 1) { // se achou caminho mais curto
                     mapaDistancia[nx][ny] = distAtual + 1;
                     fila.push({nx, ny});
                 }
@@ -319,7 +322,7 @@ void Populacao::selecaoNatural() {
         taxa_atual = 0.005f;
         bateu = true; // marca para a main conseguir diminuir o tempo de simulação
     }
-    else taxa_atual = 0.02f; // Ajustado para 2% na fase de busca (valor mais razoável que 50%)
+    else taxa_atual = 0.02f; // taxa de 2% na fase de busca
 
     // o campeão passa sem sofrer mutação
     Peixe campeao(spawn_x, spawn_y, peixes[indexMelhor].dna);

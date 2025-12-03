@@ -2,13 +2,13 @@
 #define CARDUME_HPP
 
 #include <vector>
-#include <utility> // para std::pair
-#include <queue>   // NOVA: Necessário para o BFS (algoritmo A*)
+#include <utility>
+#include <queue>
 
 // parâmetros
 #define TEMPO_VIDA 300 // quantos frames dura uma geração
 #define MAX_FORCA 0.5f // aceleração máxima por frame
-#define TAM_GRID 20    // tamanho da célula do grid para o pathfinding
+#define TAM_GRID 20 // tamanho da célula do grid para o pathfinding
 
 extern bool bateu; // variável global para indicar se o peixe bateu
 
@@ -71,10 +71,9 @@ public:
     void adicionarObstaculo(float x, float y, float w, float h);
     void limparObstaculos();
 
-    // --- NOVO: Funções auxiliares do A* ---
+    // funções auxiliares do A*
     void recalcularMapaDistancias(); 
     int getDistanciaDoMapa(float x, float y);
-    // --------------------------------------
 
 private:
     void avaliar();

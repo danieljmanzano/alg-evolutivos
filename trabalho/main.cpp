@@ -63,7 +63,7 @@ void display() {
     }
     glEnd();
     
-    // --- HUD / Instruções (NOVO) ---
+    // desenha texto informativo
     glColor3f(1.0, 1.0, 1.0); // texto branco
     
     if (!simulacaoRodando) {
@@ -102,7 +102,7 @@ void idle() {
 void mouse(int button, int state, int x, int y) {
     if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN) {
         float mouseX = x;
-        float mouseY = ALTURA_TELA - y; // Inverter Y do OpenGL
+        float mouseY = ALTURA_TELA - y; // inverter Y do OpenGL
 
         if (modoAtual == MODO_ALVO) {
             populacao.setAlvo(mouseX, mouseY);
@@ -113,12 +113,12 @@ void mouse(int button, int state, int x, int y) {
             cout << "Novo Ninho definido!" << endl;
         } 
         else if (modoAtual == MODO_OBSTACULO) {
-            // Cria um bloco de 40x40 pixels onde clicou
+            // cria um bloco de 40x40 pixels onde clicou
             populacao.adicionarObstaculo(mouseX - 20, mouseY - 20, 40, 40);
             cout << "Obstaculo criado!" << endl;
         }
     }
-    // Botão Direito para limpar obstáculos
+    // botão direito para limpar obstáculos
     if (button == GLUT_RIGHT_BUTTON && state == GLUT_DOWN) {
         populacao.limparObstaculos();
         cout << "Obstaculos removidos." << endl;
