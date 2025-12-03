@@ -4,6 +4,8 @@
 #include <algorithm>
 #include <iostream>
 
+extern bool bateu = false;
+
 // auxiliar para random float entre -1 e 1
 float rand_float_1_1() {
     return ((float)rand() / RAND_MAX) * 2.0f - 1.0f;
@@ -313,7 +315,10 @@ void Populacao::selecaoNatural() {
     
     // define uma taxa de mutação relativa a se o melhor peixe chegou ou não
     float taxa_atual; 
-    if (peixes[indexMelhor].chegou) taxa_atual = 0.005f; 
+    if (peixes[indexMelhor].chegou) {
+        taxa_atual = 0.005f;
+        bateu = true; // marca para a main conseguir diminuir o tempo de simulação
+    }
     else taxa_atual = 0.02f; // Ajustado para 2% na fase de busca (valor mais razoável que 50%)
 
     // o campeão passa sem sofrer mutação

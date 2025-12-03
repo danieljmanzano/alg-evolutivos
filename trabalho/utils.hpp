@@ -10,6 +10,8 @@
 #define MAX_FORCA 0.5f // aceleração máxima por frame
 #define TAM_GRID 20    // tamanho da célula do grid para o pathfinding
 
+extern bool bateu; // variável global para indicar se o peixe bateu
+
 struct Obstaculo {
     float x, y, w, h; // w == width, h == height
 };
