@@ -33,24 +33,20 @@ DNA DNA::crossover(DNA& parceiro) {
     if (genes.empty() || parceiro.genes.empty())
         return DNA(TEMPO_VIDA); // se o DNA estiver vazio, retorna um DNA novo aleatório para evitar crash
 
-    // ponto de corte aleatório (meio do DNA)
-    int ponto_corte = rand() % genes.size();
-
-    for (int i = 0; i < genes.size(); i++) {
-        if (i < ponto_corte)
-            novos_genes.push_back(this->genes[i]); // pega do pai A
-        else
-            novos_genes.push_back(parceiro.genes[i]); // pega do pai B
-    }
-    return DNA(novos_genes);
+    return DNA(this->genes); 
 }
 
-void DNA::mutacao() {
+void DNA::mutacao(float taxa_variavel) {
     for (auto& gene : genes) {
-        if (rand_float_0_1() < TAXA_MUTACAO) {
-            // recria este passo totalmente aleatório
-            float angle = rand_float_1_1() * 3.14159f;
-            gene = {cos(angle) * MAX_FORCA, sin(angle) * MAX_FORCA};
+        // usa a taxa passada por parâmetro
+        if (rand_float_0_1() < taxa_variavel) { 
+            
+            float anguloAtual = atan2(gene.second, gene.first);
+            float desvio = rand_float_1_1() * 0.5f; 
+            float novoAngulo = anguloAtual + desvio;
+            
+            gene.first = cos(novoAngulo) * MAX_FORCA;
+            gene.second = sin(novoAngulo) * MAX_FORCA;
         }
     }
 }
@@ -104,21 +100,9 @@ void Peixe::update(int frame, float tx, float ty, int w, int h, const std::vecto
 
 void Peixe::calcularFitness(float tx, float ty) {
     float d = sqrt(pow(x - tx, 2) + pow(y - ty, 2));
-    
-    // o fitness é o inverso da distância (1 / d)
-    // usa exponencial para premiar muito quem chega perto.
     fitness = 1.0f / (d + 1.0f); 
-    
-    // bônus enormes
-    if (chegou) {
-        fitness *= 10.0f; // multiplica por 10 se chegou
-        // bônus de velocidade (quanto mais rápido, melhor)
-        fitness *= (1.0f + (float)TEMPO_VIDA / (float)tempo_chegada);
-    }
-    
-    if (bateu) {
-        fitness /= 10.0f; // penalidade severa se bateu na parede
-    }
+    if (chegou) fitness *= 20.0f;
+    if (bateu) fitness /= 20.0f;
 }
 
 // implementação da população ----
@@ -126,14 +110,20 @@ void Populacao::inicializar(int qtd, int largura, int altura) {
     peixes.clear();
     largura_mundo = largura;
     altura_mundo = altura;
+
+    // configura grid A*
+    cols = largura / TAM_GRID;
+    rows = altura / TAM_GRID;
     
-    // Se spawn ainda não foi definido (primeira vez), define padrão
+    // se spawn ainda não foi definido (primeira vez), define padrão
     if (spawn_x == 0 && spawn_y == 0) {
         spawn_x = largura / 2.0f;
         spawn_y = 50.0f;
         target_x = largura / 2.0f;
         target_y = altura - 50.0f;
     }
+
+    recalcularMapaDistancias();
     
     frame_atual = 0;
     geracao_atual = 1;
@@ -143,10 +133,77 @@ void Populacao::inicializar(int qtd, int largura, int altura) {
     }
 }
 
+void Populacao::recalcularMapaDistancias() {
+    // inicializa com valor infinito
+    mapaDistancia.assign(cols, std::vector<int>(rows, 999999));
+
+    // marca paredes como -1
+    for (int i = 0; i < cols; i++) {
+        for (int j = 0; j < rows; j++) {
+            float cx = i * TAM_GRID + TAM_GRID/2;
+            float cy = j * TAM_GRID + TAM_GRID/2;
+            
+            for (const auto& obs : obstaculos) {
+                if (cx > obs.x && cx < obs.x + obs.w &&
+                    cy > obs.y && cy < obs.y + obs.h) {
+                    mapaDistancia[i][j] = -1; // bloqueado
+                    break;
+                }
+            }
+        }
+    }
+
+    // BFS a partir do Alvo
+    int targetI = (int)target_x / TAM_GRID;
+    int targetJ = (int)target_y / TAM_GRID;
+
+    if (targetI < 0) targetI = 0; if (targetI >= cols) targetI = cols - 1;
+    if (targetJ < 0) targetJ = 0; if (targetJ >= rows) targetJ = rows - 1;
+
+    std::queue<std::pair<int, int>> fila;
+    
+    if (mapaDistancia[targetI][targetJ] != -1) {
+        mapaDistancia[targetI][targetJ] = 0;
+        fila.push({targetI, targetJ});
+    }
+
+    int dx[] = {0, 0, 1, -1};
+    int dy[] = {1, -1, 0, 0};
+
+    while (!fila.empty()) {
+        auto [cx, cy] = fila.front();
+        fila.pop();
+        int distAtual = mapaDistancia[cx][cy];
+
+        for (int k = 0; k < 4; k++) {
+            int nx = cx + dx[k];
+            int ny = cy + dy[k];
+
+            if (nx >= 0 && nx < cols && ny >= 0 && ny < rows) {
+                if (mapaDistancia[nx][ny] > distAtual + 1) { // Se achou caminho mais curto
+                    mapaDistancia[nx][ny] = distAtual + 1;
+                    fila.push({nx, ny});
+                }
+            }
+        }
+    }
+}
+
+int Populacao::getDistanciaDoMapa(float x, float y) {
+    int i = (int)x / TAM_GRID;
+    int j = (int)y / TAM_GRID;
+    if (i < 0 || i >= cols || j < 0 || j >= rows) return 9999;
+    int d = mapaDistancia[i][j];
+    return (d == -1) ? 9999 : d;
+}
+
 void Populacao::setAlvo(float x, float y) {
     target_x = x;
     target_y = y;
-    // se mudar o alvo, reinicia a geração (senão eles aprendem o caminho errado)
+    
+    // se mudou o alvo, o mapa de distâncias muda completamente
+    recalcularMapaDistancias();
+    
     frame_atual = 0;
     inicializar(peixes.size(), largura_mundo, altura_mundo);
 }
@@ -160,13 +217,19 @@ void Populacao::setSpawn(float x, float y) {
 
 void Populacao::adicionarObstaculo(float x, float y, float w, float h) {
     obstaculos.push_back({x, y, w, h});
-    // reinicia a geração quando coloca obstáculo
+    
+    // se adicionou parede, o caminho muda
+    recalcularMapaDistancias();
+    
     frame_atual = 0;
     inicializar(peixes.size(), largura_mundo, altura_mundo);
 }
 
 void Populacao::limparObstaculos() {
     obstaculos.clear();
+    
+    recalcularMapaDistancias();
+    
     frame_atual = 0;
     inicializar(peixes.size(), largura_mundo, altura_mundo);
 }
@@ -190,8 +253,26 @@ void Populacao::executarPasso() {
 
 void Populacao::avaliar() {
     float max_fit = 0;
-    for (auto& p : peixes) {
-        p.calcularFitness(target_x, target_y);
+    for (auto& p : peixes) {        
+        // distância pelo labirinto (do mapa A*)
+        int distGrid = getDistanciaDoMapa(p.x, p.y);
+        
+        // distância euclidiana direta (ajuste fino)
+        float distEuclidiana = sqrt(pow(p.x - target_x, 2) + pow(p.y - target_y, 2));
+        
+        // score combinado: grid vale muito mais (TAM_GRID), euclidiana é o ajuste
+        float distTotal = (float)distGrid * TAM_GRID + (distEuclidiana * 0.1f);
+        
+        p.fitness = 1.0f / (distTotal + 1.0f);
+        
+        if (p.chegou) {
+            p.fitness *= 20.0f; // aplica bônus por chegar
+            p.fitness *= (1.0f + (float)TEMPO_VIDA / (float)p.tempo_chegada);
+        }
+        if (p.bateu) {
+            p.fitness /= 20.0f; // penaliza por bater
+        }
+
         if (p.fitness > max_fit) max_fit = p.fitness;
     }
 
@@ -201,54 +282,53 @@ void Populacao::avaliar() {
         p.fitness /= max_fit;
 }
 
+DNA* torneio(const std::vector<Peixe>& pop) {
+    int k = 5;
+    int melhorIndex = -1;
+    float melhorFit = -1.0f;
+
+    for (int i = 0; i < k; i++) {
+        int r = rand() % pop.size();
+        if (pop[r].fitness > melhorFit) {
+            melhorFit = pop[r].fitness;
+            melhorIndex = r;
+        }
+    }
+    return const_cast<DNA*>(&pop[melhorIndex].dna);
+}
+
 void Populacao::selecaoNatural() {
     std::vector<Peixe> nova_populacao;
-    
     if (peixes.empty()) return;
 
+    // aplica o elitismo
+    int indexMelhor = 0;
+    float maxFit = -1.0f;
     for (int i = 0; i < peixes.size(); i++) {
-        DNA* paiA = nullptr; 
-        DNA* paiB = nullptr;
-        
-        // seleção do pai A
-        int tentativas = 0;
-        while(paiA == nullptr) {
-            int r = rand() % peixes.size();
-            // tenta selecionar baseada na probabilidade
-            if (rand_float_0_1() < peixes[r].fitness) { 
-                paiA = &peixes[r].dna;
-                break; 
-            }
-            
-            // segurança contra loop infinito (caso todos fitness sejam 0)
-            tentativas++;
-            if (tentativas > 1000) {
-                paiA = &peixes[rand() % peixes.size()].dna; // pega qualquer um
-                break;
-            }
+        if (peixes[i].fitness > maxFit) {
+            maxFit = peixes[i].fitness;
+            indexMelhor = i;
         }
+    }
+    
+    // define uma taxa de mutação relativa a se o melhor peixe chegou ou não
+    float taxa_atual; 
+    if (peixes[indexMelhor].chegou) taxa_atual = 0.005f; 
+    else taxa_atual = 0.02f; // Ajustado para 2% na fase de busca (valor mais razoável que 50%)
 
-        // seleção do pai B
-        tentativas = 0;
-        while(paiB == nullptr) {
-            int r = rand() % peixes.size();
-            if (rand_float_0_1() < peixes[r].fitness) { 
-                paiB = &peixes[r].dna;
-                break; 
-            }
-            
-            tentativas++;
-            if (tentativas > 1000) {
-                paiB = &peixes[rand() % peixes.size()].dna;
-                break;
-            }
-        }
+    // o campeão passa sem sofrer mutação
+    Peixe campeao(spawn_x, spawn_y, peixes[indexMelhor].dna);
+    nova_populacao.push_back(campeao);
 
-        DNA filhoDNA = paiA->crossover(*paiB);
-        filhoDNA.mutacao();
+    // reprodução assexuada (clonagem + mutação)
+    for (int i = 1; i < peixes.size(); i++) { // começa de 1 porque o 0 é o melhor
+        DNA* pai = torneio(peixes); // torneio para selecionar o pai
+        DNA filhoDNA = DNA(pai->genes); // clona o dna do pai
+        filhoDNA.mutacao(taxa_atual); // muta
         
         Peixe filho(spawn_x, spawn_y, filhoDNA);
         nova_populacao.push_back(filho);
     }
+    
     peixes = nova_populacao;
 }

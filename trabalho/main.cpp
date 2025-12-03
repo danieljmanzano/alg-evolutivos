@@ -89,7 +89,9 @@ void display() {
 // função chamada repetidamente
 void idle() {
     // this_thread::sleep_for(chrono::milliseconds(30)); // controla a velocidade da simulação
-    if (simulacaoRodando) populacao.executarPasso(); 
+    if (simulacaoRodando) 
+    for (int i = 0; i < 10; i++)
+        populacao.executarPasso(); 
     glutPostRedisplay(); 
 }
 
