@@ -1,5 +1,5 @@
 all:
-	g++ main.cpp Cardume.cpp -o fss -lGL -lGLU -lglut
+	g++ main.cpp utils.cpp -o fss -lGL -lGLU -lglut
 
 run:
 	./fss
