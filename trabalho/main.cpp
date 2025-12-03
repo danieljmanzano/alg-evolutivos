@@ -11,6 +11,8 @@ using namespace std;
 // gerador de números aleatórios
 default_random_engine gerador(chrono::system_clock::now().time_since_epoch().count());
 
+bool acelera_simulacao = false; // flag para acelerar a simulação
+
 // máquina de estados que avalia o que o mouse está fazendo agora
 enum Modo { MODO_ALVO, MODO_SPAWN, MODO_OBSTACULO };
 Modo modoAtual = MODO_ALVO; // começa movendo a comida
@@ -90,7 +92,7 @@ void display() {
 void idle() {
     // this_thread::sleep_for(chrono::milliseconds(30)); // controla a velocidade da simulação
     if (simulacaoRodando) {
-        if (!bateu) 
+        if (!bateu || acelera_simulacao) 
             for (int i = 0; i < 100; i++) populacao.executarPasso(); // simulação rápida
         else 
             populacao.executarPasso();
@@ -133,7 +135,6 @@ void keyboard(unsigned char key, int x, int y) {
             if (simulacaoRodando) cout << "Simulacao INICIADA!" << endl;
             else cout << "Simulacao PAUSADA!" << endl;
             break;
-            
         case '1':
             modoAtual = MODO_ALVO;
             break;
@@ -150,6 +151,17 @@ void keyboard(unsigned char key, int x, int y) {
             break;
         case 27: // ESC
             exit(0);
+            break;
+
+        /* controle da simulação especificamente após algum peixe ter encontrado a comida */
+        // adição especificamente para a apresentação do trabalho
+        case 'a': 
+        case 'A':
+            acelera_simulacao = true;
+            break;
+        case 'd':
+        case 'D':
+            acelera_simulacao = false;
             break;
     }
 }

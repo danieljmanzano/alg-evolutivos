@@ -319,10 +319,10 @@ void Populacao::selecaoNatural() {
     // define uma taxa de mutação relativa a se o melhor peixe chegou ou não
     float taxa_atual; 
     if (peixes[indexMelhor].chegou) {
-        taxa_atual = 0.005f;
+        taxa_atual = 0.01f; // taxa de 1% na fase de exploração fina
         bateu = true; // marca para a main conseguir diminuir o tempo de simulação
     }
-    else taxa_atual = 0.02f; // taxa de 2% na fase de busca
+    else taxa_atual = 0.1f; // taxa de 10% na fase de busca
 
     // o campeão passa sem sofrer mutação
     Peixe campeao(spawn_x, spawn_y, peixes[indexMelhor].dna);
