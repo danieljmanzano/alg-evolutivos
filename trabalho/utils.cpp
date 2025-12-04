@@ -30,7 +30,7 @@ DNA::DNA(std::vector<std::pair<float, float>> novos_genes) {
     genes = novos_genes;
 }
 
-DNA DNA::crossover(DNA& parceiro) {
+DNA DNA::crossover(DNA& parceiro) { /* não usado na última versão do projeto, mas continua aqui por via das dúvidas*/
     std::vector<std::pair<float, float>> novos_genes;
 
     if (genes.empty() || parceiro.genes.empty())
