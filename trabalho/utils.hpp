@@ -51,8 +51,9 @@ class Populacao {
 public:
     std::vector<Peixe> peixes; // peixes na população
     std::vector<Obstaculo> obstaculos; // obstáculos no ambiente
+    std::queue<float> ultimos_fitness; //fila dos ultimos 10 fitness para calcular variação de fitness
     
-    // variáveis para o mapa de distância (usado no A*)
+    // variáveis para o mapa de distância usado na bfs
     std::vector<std::vector<int>> mapaDistancia; 
     int cols, rows;
 

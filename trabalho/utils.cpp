@@ -252,14 +252,14 @@ void Populacao::executarPasso() {
         selecaoNatural();
         frame_atual = 0;
         geracao_atual++;
-        std::cout << "Geracao #" << geracao_atual << " iniciada." << std::endl;
     }
 }
 
 void Populacao::avaliar() {
     float max_fit = 0;
+    float mean_fit = 0;
     for (auto& p : peixes) {        
-        // distância pelo labirinto (do mapa A*)
+        // distância pela bfs
         int distGrid = getDistanciaDoMapa(p.x, p.y);
         
         // distância euclidiana direta (ajuste fino)
@@ -279,10 +279,23 @@ void Populacao::avaliar() {
         }
 
         if (p.fitness > max_fit) max_fit = p.fitness;
+
+        mean_fit += p.fitness;
     }
 
-    if (max_fit == 0) max_fit = 1; // evita divisão por zero
+    //calcula fit medio
+    mean_fit /= peixes.size();
 
+    std::cout << geracao_atual << ',' << max_fit << ',' << mean_fit << "\n";
+
+    //armazena as 10 ultimas fitness para verificar se estagnou
+    if(ultimos_fitness.size()> 9){
+        ultimos_fitness.pop();
+    }
+    ultimos_fitness.push(max_fit);
+
+    //normaliza para 0 a 1 para que as comparações sejam feitas com relação a proporção
+    if (max_fit == 0) max_fit = 1; // evita divisão por zero
     for (auto& p : peixes) 
         p.fitness /= max_fit;
 }
@@ -300,6 +313,29 @@ DNA* torneio(const std::vector<Peixe>& pop) {
         }
     }
     return const_cast<DNA*>(&pop[melhorIndex].dna);
+}
+
+float desvio_medio(std::queue<float> fitnesses){
+    if (fitnesses.empty()) return 0.0f;
+    int n = (int)fitnesses.size();
+    float soma = 0.0f;
+    std::queue<float> q = fitnesses; //copia da fila
+
+    //calcula media
+    while (!q.empty()) {
+        soma += q.front();
+        q.pop();
+    }
+    float mean = soma / n;
+
+    //calcula desvio medio
+    float desvio = 0.0f;
+    q = fitnesses; 
+    while (!q.empty()) {
+        float v = q.front(); q.pop();
+        desvio += std::fabs(v - mean);
+    }
+    return desvio / n;
 }
 
 void Populacao::selecaoNatural() {
@@ -320,6 +356,9 @@ void Populacao::selecaoNatural() {
     float taxa_atual; 
     if (peixes[indexMelhor].chegou) {
         taxa_atual = 0.01f; // taxa de 1% na fase de exploração fina
+        if(desvio_medio(ultimos_fitness) < 10e-4){
+            taxa_atual = 0.1f; // aumenta taxa em caso da fitness estagnar
+        }
         bateu = true; // marca para a main conseguir diminuir o tempo de simulação
     }
     else taxa_atual = 0.1f; // taxa de 10% na fase de busca
