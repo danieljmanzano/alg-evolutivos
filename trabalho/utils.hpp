@@ -10,7 +10,8 @@
 #define MAX_FORCA 0.5f // aceleração máxima por frame
 #define TAM_GRID 20 // tamanho da célula do grid para o pathfinding
 
-extern bool bateu; // variável global para indicar se o peixe bateu
+extern bool global_chegou; // variável global para indicar se o peixe chegou à comida
+extern bool acelera_simulacao; // variável global para indicar se a simulação deve ser acelerada
 
 struct Obstaculo {
     float x, y, w, h; // w == width, h == height

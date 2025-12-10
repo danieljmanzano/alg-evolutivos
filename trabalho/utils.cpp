@@ -4,7 +4,8 @@
 #include <algorithm>
 #include <iostream>
 
-extern bool bateu = false;
+bool global_chegou = false;
+bool acelera_simulacao = true;
 
 // auxiliar para random float entre -1 e 1
 float rand_float_1_1() {
@@ -128,6 +129,7 @@ void Populacao::inicializar(int qtd, int largura, int altura) {
         target_y = altura - 50.0f;
     }
 
+    global_chegou = false;
     recalcularMapaDistancias();
     
     frame_atual = 0;
@@ -359,7 +361,10 @@ void Populacao::selecaoNatural() {
         if(desvio_medio(ultimos_fitness) < 10e-4){
             taxa_atual = 0.1f; // aumenta taxa em caso da fitness estagnar
         }
-        bateu = true; // marca para a main conseguir diminuir o tempo de simulação
+        if (!global_chegou) {
+            global_chegou = true;
+            acelera_simulacao = false; // desacelera simulação para observar melhor
+        }
     }
     else taxa_atual = 0.1f; // taxa de 10% na fase de busca
 

@@ -1,8 +1,8 @@
 all:
-	g++ main.cpp utils.cpp -o fss -lGL -lGLU -lglut
+	g++ main.cpp utils.cpp -o executavel -lGL -lGLU -lglut
 
 run:
-	./fss
+	./executavel
 
 clean:
-	rm fss
+	rm executavel
