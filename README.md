@@ -33,6 +33,32 @@ Para limpar o executável gerado pelos códigos, no terminal, digite:
 O funcionamento dos códigos, visualizado na simulação, itera repetidamente sobre uma população de 100 peixes que busca o melhor fitness no caminho pela comida. Por padrão, enquanto nenhum peixe chega ao alvo, a simulação é visualizada de forma acelerada; quando pelo menos um o encontra, a simulação desacelera a um tempo "normal". Para alterar a velocidade da simulação a qualquer momento, digite, sobre a tela, 'a' para acelerar e 'd' para desacelerar. \
 Além da simulação visual com o OpenGL, o código printa no terminal, a cada iteração: o número da geração, o fitness do melhor indivíduo e o fitness médio da população.
 
-## Especificidades Técnicas
-aqui nois explica melhor coisas particulares do codigo
+## Explicação conceitual
+
+Na modelagem desse problema, cada indivíduo é possui um genoma que é uma coleção de genes, cada gene é um par de movimentos para os eixos x e y, assim cada genoma é uma sequencia de movimentos.
+
+O fitness de cada indivíduo é medido por meio do cálculo da distância euleriana do fim da trajetória e da distância de Manhattan calcula levando em conta obstáculos e uma discretização do espaço. O fitness é dado pelo inverso da soma desses valores, quando o indivíduo colide com um obstáculo ele recebe uma penalidade, quando ele acerta o objetivo ele recebe um bônus por acertar e um bônus inversamente proporcional à quantidade de passos para chegar, recompensando soluções mais rápidas.
+
+A forma de reprodução escolhida foi a clonagem com mutação. O melhor indivíduo de cada geração sempre se reproduz, os outros são selecionados por meio de torneios com indivíduos aleatórios. Enquanto o programa não encontrar uma solução possível, a mutação tem uma taxa elevada, após achar a primeira solução possível a mutação é reduzida para realizar ajustes finos, caso o programa estagne em uma solução, a mutação aumentará para buscar mais soluções.
+
+Testando algumas taxas de mutação, 12% foi selecionado, pois apresentou boa capacidade de convergência.
+
+<figure>
+ <img width="1920" height="1080" alt="imagemreadme" src="https://github.com/user-attachments/assets/5a714915-e433-4ee8-8686-8afcc98c9044" />
+ <figcaption>Imagem do teste</figcaption> 
+</figure>
+
+
+Nos gráficos a seguir a linha vermelha representa o melhor fitnesss por geração e a azul o finess médio
+
+<img width="600" height="371" alt="chart" src="https://github.com/user-attachments/assets/073887dd-4d5a-4797-aedd-8be1f2af650e" />
+Gráfico com mutação de 10%
+
+<img width="600" height="371" alt="chart(1)" src="https://github.com/user-attachments/assets/ef5e18e6-d19f-4ede-9712-d9af3a41116f" />
+Gráfico com mutação de 12%
+
+<img width="600" height="371" alt="chart(2)" src="https://github.com/user-attachments/assets/ff86d305-4817-4483-807f-e75c2af36125" />
+Gráfico com mutação de 14%
+
+
 
