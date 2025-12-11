@@ -119,7 +119,7 @@ void Populacao::inicializar(int qtd, int largura, int altura) {
     largura_mundo = largura;
     altura_mundo = altura;
 
-    // configura grid A*
+    // configura grid para BFS
     cols = largura / TAM_GRID;
     rows = altura / TAM_GRID;
     
