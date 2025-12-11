@@ -255,7 +255,7 @@ bool Populacao::carregarObstaculosDeArquivo(const std::string& caminho) {
     std::string linha;
     while (std::getline(arquivo, linha)) {//lê cada linha do arquivo
         std::istringstream iss(linha);
-        float x, y, w, h;// coordenadas x,y e altura e largura do obstaculo
+        float x, y, w, h;// coordenadas x,y e largura e altura do obstaculo
         if (iss >> x >> y >> w >> h) {
             obstaculos.push_back({x, y, w, h});
         }
