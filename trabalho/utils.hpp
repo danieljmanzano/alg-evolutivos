@@ -75,7 +75,7 @@ public:
     void limparObstaculos();
     bool carregarObstaculosDeArquivo(const std::string& caminho);
 
-    // funções auxiliares do A*
+    // funções auxiliares do BFS
     void recalcularMapaDistancias(); 
     int getDistanciaDoMapa(float x, float y);
 
