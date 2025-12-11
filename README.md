@@ -31,6 +31,9 @@ Para limpar o executável gerado pelos códigos, no terminal, digite:
 ```
 ## Funcionamento
 O funcionamento dos códigos, visualizado na simulação, itera repetidamente sobre uma população de 100 peixes que busca o melhor fitness no caminho pela comida. Por padrão, enquanto nenhum peixe chega ao alvo, a simulação é visualizada de forma acelerada; quando pelo menos um o encontra, a simulação desacelera a um tempo "normal". Para alterar a velocidade da simulação a qualquer momento, digite, sobre a tela, 'a' para acelerar e 'd' para desacelerar. \
+
+Pode também ser criados obstáculos por meio da modificação do arquivo "obstaculos.txt". Nele cada linha representa um obstáculo, com as informações coordenada x, coordenada y, largura e altura, em ordem. \
+
 Além da simulação visual com o OpenGL, o código printa no terminal, a cada iteração: o número da geração, o fitness do melhor indivíduo e o fitness médio da população.
 
 ## Explicação conceitual
@@ -41,10 +44,10 @@ O fitness de cada indivíduo é medido por meio do cálculo da distância euleri
 
 A forma de reprodução escolhida foi a clonagem com mutação. O melhor indivíduo de cada geração sempre se reproduz, os outros são selecionados por meio de torneios com indivíduos aleatórios. Enquanto o programa não encontrar uma solução possível, a mutação tem uma taxa elevada, após achar a primeira solução possível a mutação é reduzida para realizar ajustes finos, caso o programa estagne em uma solução, a mutação aumentará para buscar mais soluções.
 
-Testando algumas taxas de mutação, 12% foi selecionado, pois apresentou boa capacidade de convergência.
+Atualmente no código, a taxa de mutação quando a solução para de melhorar, é de 12%, por alcançar a melhor fitness dentre as taxas testadas. A seguir está o teste realizado.
 
 <figure>
- <img width="1920" height="1080" alt="imagemreadme" src="https://github.com/user-attachments/assets/5a714915-e433-4ee8-8686-8afcc98c9044" />
+ <img width="1920" height="1020" alt="imagemreadme" src="https://github.com/user-attachments/assets/f03951f2-4d7a-4dc8-a56c-2ed990a94d21" /> 
  <figcaption>Imagem do teste</figcaption> 
 </figure>
 
@@ -58,7 +61,9 @@ Gráfico com mutação de 10%
 Gráfico com mutação de 12%
 
 <img width="600" height="371" alt="chart(2)" src="https://github.com/user-attachments/assets/ff86d305-4817-4483-807f-e75c2af36125" />
-Gráfico com mutação de 14%
+Gráfico com mutação de 14% \
+
+Como mostram os gráficos, a mutação de 12% apresentou o melhor desempenho.
 
 
 
