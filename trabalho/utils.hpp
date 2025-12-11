@@ -4,6 +4,7 @@
 #include <vector>
 #include <utility>
 #include <queue>
+#include <fstream> // para operações com arquivos
 
 // parâmetros
 #define TEMPO_VIDA 300 // quantos frames dura uma geração
@@ -72,6 +73,7 @@ public:
     void setSpawn(float x, float y);
     void adicionarObstaculo(float x, float y, float w, float h);
     void limparObstaculos();
+    bool carregarObstaculosDeArquivo(const std::string& caminho);
 
     // funções auxiliares do A*
     void recalcularMapaDistancias(); 

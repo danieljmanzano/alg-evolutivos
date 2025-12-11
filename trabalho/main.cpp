@@ -179,6 +179,7 @@ void setup() {
 
 int main(int argc, char** argv) {
     populacao.inicializar(100, LARGURA_TELA, ALTURA_TELA); // 100 peixes
+    populacao.carregarObstaculosDeArquivo("obstaculos.txt"); // carrega obstáculos do arquivo
 
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB);

@@ -3,6 +3,8 @@
 #include <cstdlib>
 #include <algorithm>
 #include <iostream>
+#include <fstream>
+#include <sstream>
 
 bool global_chegou = false;
 bool acelera_simulacao = true;
@@ -46,7 +48,7 @@ void DNA::mutacao(float taxa_variavel) {
         if (rand_float_0_1() < taxa_variavel) { 
             
             float anguloAtual = atan2(gene.second, gene.first);
-            float desvio = rand_float_1_1() * 0.5f; 
+            float desvio = rand_float_1_1() * 0.6f; //varia +/- 35 graus
             float novoAngulo = anguloAtual + desvio;
             
             gene.first = cos(novoAngulo) * MAX_FORCA;
@@ -239,6 +241,37 @@ void Populacao::limparObstaculos() {
     
     frame_atual = 0;
     inicializar(peixes.size(), largura_mundo, altura_mundo);
+}
+
+bool Populacao::carregarObstaculosDeArquivo(const std::string& caminho) {
+    std::ifstream arquivo(caminho);
+    if (!arquivo.is_open()) {
+        std::cerr << "Erro ao abrir arquivo de obstáculos: " << caminho << std::endl;
+        return false;
+    }
+
+    obstaculos.clear(); // apenas limpa os obstáculos, sem reinicializar
+
+    std::string linha;
+    while (std::getline(arquivo, linha)) {//lê cada linha do arquivo
+        std::istringstream iss(linha);
+        float x, y, w, h;// coordenadas x,y e altura e largura do obstaculo
+        if (iss >> x >> y >> w >> h) {
+            obstaculos.push_back({x, y, w, h});
+        }
+    }
+
+    arquivo.close();
+
+    // recalcula o mapa e reinicializa 
+    recalcularMapaDistancias();
+    frame_atual = 0;
+    if (!peixes.empty()) {
+        inicializar(peixes.size(), largura_mundo, altura_mundo);
+    }
+
+    std::cout << "Carregados " << obstaculos.size() << " obstáculos de " << caminho << std::endl;
+    return true;
 }
 
 void Populacao::executarPasso() {
