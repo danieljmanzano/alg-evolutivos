@@ -97,12 +97,6 @@ void Peixe::update(int frame, float tx, float ty, int w, int h, const std::vecto
     acc_x = 0; acc_y = 0;
 }
 
-void Peixe::calcularFitness(float tx, float ty) {
-    float d = sqrt(pow(x - tx, 2) + pow(y - ty, 2));
-    fitness = 1.0f / (d + 1.0f); 
-    if (chegou) fitness *= 20.0f;
-    if (bateu) fitness /= 20.0f;
-}
 
 
 // implementação da população ------
