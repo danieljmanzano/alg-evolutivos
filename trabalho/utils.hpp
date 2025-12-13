@@ -26,7 +26,7 @@ struct DNA {
     DNA(std::vector<std::pair<float, float>> novos_genes); // construtor herdado
 
     void mutacao(float taxa_mutacao);
-    DNA crossover(DNA& parceiro);
+    // obs.: o método de crossover, como não é necessário na última versão do projeto, não foi mantido
 };
 
 struct Peixe {

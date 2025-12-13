@@ -33,14 +33,6 @@ DNA::DNA(std::vector<std::pair<float, float>> novos_genes) {
     genes = novos_genes;
 }
 
-DNA DNA::crossover(DNA& parceiro) { /* não usado na última versão do projeto, mas continua aqui por via das dúvidas*/
-    std::vector<std::pair<float, float>> novos_genes;
-
-    if (genes.empty() || parceiro.genes.empty())
-        return DNA(TEMPO_VIDA); // se o DNA estiver vazio, retorna um DNA novo aleatório para evitar crash
-
-    return DNA(this->genes); 
-}
 
 void DNA::mutacao(float taxa_variavel) {
     for (auto& gene : genes) {
@@ -354,16 +346,16 @@ float desvio_medio(std::queue<float> fitnesses){
     if (fitnesses.empty()) return 0.0f;
     int n = (int)fitnesses.size();
     float soma = 0.0f;
-    std::queue<float> q = fitnesses; //copia da fila
+    std::queue<float> q = fitnesses; // cópia da fila
 
-    //calcula media
+    // calcula média
     while (!q.empty()) {
         soma += q.front();
         q.pop();
     }
     float mean = soma / n;
 
-    //calcula desvio medio
+    // calcula desvio médio
     float desvio = 0.0f;
     q = fitnesses; 
     while (!q.empty()) {
