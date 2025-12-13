@@ -391,8 +391,16 @@ void Populacao::selecaoNatural() {
     Peixe campeao(spawn_x, spawn_y, peixes[indexMelhor].dna);
     nova_populacao.push_back(campeao);
 
-    // reprodução assexuada (clonagem + mutação)
-    for (int i = 1; i < peixes.size(); i++) { // começa de 1 porque o 0 é o melhor
+    // clonagem e mutação do melhor(3 filhos)
+    for(int i = 1;i < 4;i++){
+        DNA filhoDNA = DNA(campeao.dna.genes);
+        filhoDNA.mutacao(taxa_atual);
+        Peixe filho(spawn_x,spawn_y,filhoDNA);
+        nova_populacao.push_back(filho);
+    }
+
+    // clonagem e mutação da população toda com torneio
+    for (int i = 4; i < peixes.size(); i++) { 
         DNA* pai = torneio(peixes); // torneio para selecionar o pai
         DNA filhoDNA = DNA(pai->genes); // clona o dna do pai
         filhoDNA.mutacao(taxa_atual); // muta
