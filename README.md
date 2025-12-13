@@ -77,7 +77,18 @@ Nos gráficos a seguir, a linha vermelha representa o melhor fitnesss por geraç
  <figcaption>Gráfico com mutação de 14%</figcaption>
 </figure>
 
-Como observado nos gráficos, a mutação de 12% apresentou o melhor desempenho. Dessa forma, foi a escolhida para integrar o código final.
+Todos os gráficos apresentam um comportamento similar: uma solução nova é encontrada; o fitness médio decola; a solução estagna; a mutação aumenta; o fitness médio despenca, devido à criação de indivíduos muito diferentes do máximo local; uma nova solução ótima é encontrada e o ciclo se repete. Pelos resultados observados, a mutação de 12% apresentou o melhor desempenho. Dessa forma, foi a escolhida para integrar o código final.
+
+Foi testado também o uso de uma taxa de mutação que incrementa gradualmente conforme mais tempo passa estagnado.
+<img width="1920" height="1020" alt="image" src="https://github.com/user-attachments/assets/7efdcc7f-aa40-4709-81d3-18ccc9b8ff54" /> Teste aplicado
+
+
+<img width="600" height="371" alt="chart(3)" src="https://github.com/user-attachments/assets/f714e3ee-1801-4b10-a71c-458533d85b6a" /> Mutação de 5% nas primeiras 10 gerações após detectar estagnação, 12% em diante.
+
+<img width="600" height="371" alt="chart(4)" src="https://github.com/user-attachments/assets/3a302654-8300-4ac1-97ff-71e2a4b5ec36" /> Mutação de 12% após detectar estagnação.
+
+Como o teste demonstra o aumento gradual apresentou pouquíssima diferença do aumento brusco, levando à decisão de ter somente duas etapas de mutação após encontrar o alvo, 1% e 12%.
+
 
 # Estrutura e Implementação
 
