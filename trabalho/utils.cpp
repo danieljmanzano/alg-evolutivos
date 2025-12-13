@@ -384,7 +384,7 @@ void Populacao::selecaoNatural() {
     if (peixes[indexMelhor].chegou) {
         taxa_atual = 0.01f; // taxa de 1% na fase de exploração fina
         if(desvio_medio(ultimos_fitness) < 10e-4){
-            taxa_atual = 0.1f; // aumenta taxa em caso da fitness estagnar
+            taxa_atual = 0.12f; // aumenta taxa em caso da fitness estagnar
         }
         if (!global_chegou) {
             global_chegou = true;
