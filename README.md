@@ -1,6 +1,6 @@
 ### Trabalho desenvolvido para a disciplina SSC0713 - Sistemas Evolutivos Aplicados à Robótica
 Alunos:
-Artur Kenzo Obara Kawazoe - \
+Artur Kenzo Obara Kawazoe - 15652663 \
 Daniel Jorge Manzano - 15446861 \
 Larissa Pires Moreira Rocha Duarte - 15522358
 ## Introdução
@@ -32,19 +32,19 @@ Para limpar o executável gerado pelos códigos, no terminal, digite:
 ## Funcionamento
 O funcionamento dos códigos, visualizado na simulação, itera repetidamente sobre uma população de 100 peixes que busca o melhor fitness no caminho pela comida. Por padrão, enquanto nenhum peixe chega ao alvo, a simulação é visualizada de forma acelerada; quando pelo menos um o encontra, a simulação desacelera a um tempo "normal". Para alterar a velocidade da simulação a qualquer momento, digite, sobre a tela, 'a' para acelerar e 'd' para desacelerar. \
 
-Pode também ser criados obstáculos por meio da modificação do arquivo "obstaculos.txt". Nele cada linha representa um obstáculo, com as informações coordenada x, coordenada y, largura e altura, em ordem. \
+Pode também ser criados obstáculos por meio da modificação do arquivo "obstaculos.txt". Nele, cada linha representa um obstáculo, com as informações coordenada x, coordenada y, largura e altura, em ordem. \
 
 Além da simulação visual com o OpenGL, o código printa no terminal, a cada iteração: o número da geração, o fitness do melhor indivíduo e o fitness médio da população.
 
 ## Explicação conceitual
 
-Na modelagem desse problema, cada indivíduo é possui um genoma que é uma coleção de genes, cada gene é um par de movimentos para os eixos x e y, assim cada genoma é uma sequencia de movimentos.
+Na modelagem desse problema, cada indivíduo possui um genoma que é uma coleção de genes, cada gene é um par de movimentos para os eixos x e y, assim cada genoma é uma sequência de movimentos.
 
-O fitness de cada indivíduo é medido por meio do cálculo da distância euleriana do fim da trajetória e da distância de Manhattan calcula levando em conta obstáculos e uma discretização do espaço. O fitness é dado pelo inverso da soma desses valores, quando o indivíduo colide com um obstáculo ele recebe uma penalidade, quando ele acerta o objetivo ele recebe um bônus por acertar e um bônus inversamente proporcional à quantidade de passos para chegar, recompensando soluções mais rápidas.
+O fitness de cada indivíduo é medido por meio do cálculo da distância euleriana do fim da trajetória e da distância de Manhattan calculada levando em conta obstáculos e uma discretização do espaço. O fitness é dado pelo inverso da soma desses valores, quando o indivíduo colide com um obstáculo ele recebe uma penalidade, quando ele acerta o objetivo ele recebe um bônus por acertar e um bônus inversamente proporcional à quantidade de passos para chegar, recompensando soluções mais rápidas.
 
-A forma de reprodução escolhida foi a clonagem com mutação. O melhor indivíduo de cada geração sempre se reproduz, os outros são selecionados por meio de torneios com indivíduos aleatórios. Enquanto o programa não encontrar uma solução possível, a mutação tem uma taxa elevada, após achar a primeira solução possível a mutação é reduzida para realizar ajustes finos, caso o programa estagne em uma solução, a mutação aumentará para buscar mais soluções.
+A forma de reprodução escolhida foi a clonagem com mutação, pois no contexto desse algoritmo, a reprodução assexuada funciona melhor que o crossover, considerando que, se dois indivíduos com caminhos ótimos distintos se reproduzem, o filho pode seguir um caminho diferente que sai da rota ideal, enquanto a clonagem preserva a trajetória do pai. O melhor indivíduo de cada geração sempre se reproduz (elitismo), os outros são selecionados por meio de torneios com indivíduos aleatórios. Enquanto o programa não encontra uma solução possível, a mutação tem uma taxa elevada, após achar a primeira solução possível a mutação é reduzida para realizar ajustes finos, caso o programa estagne em uma solução, a mutação aumentará para buscar mais soluções.
 
-Atualmente no código, a taxa de mutação quando a solução para de melhorar, é de 12%, por alcançar a melhor fitness dentre as taxas testadas. A seguir está o teste realizado.
+Atualmente no código, a taxa de mutação quando a solução para de melhorar é de 12%, por alcançar a melhor fitness dentre as taxas testadas. A seguir está o teste realizado.
 
 <figure>
  <img width="1920" height="1020" alt="imagemreadme" src="https://github.com/user-attachments/assets/f03951f2-4d7a-4dc8-a56c-2ed990a94d21" /> 
