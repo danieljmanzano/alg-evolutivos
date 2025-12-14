@@ -109,3 +109,5 @@ O fluxo do algoritmo se baseia na repetição de chamadas, em ```idle``` (dentro
 4. Evolução: O sistema aplica o elitismo (preservando o melhor) e gera o restante da população através de clonagem com mutação adaptativa, reiniciando o ciclo. Assim como mencionado anteriormente, a taxa de mutação é alterada com base no cenário em questão (caso algum indivíduo tenha alcançado o alvo, diminui a mutação; caso não tenha ou as populações estejam estagnadas, aumenta).
 
 
+## Vídeo
+https://drive.google.com/file/d/1M-vmQGHwy7RvXEv9OO3Zexr8JbGuOVE_/view?usp=sharing
